@@ -3,13 +3,16 @@
 <head>
   <meta charset="UTF-8" />
   <title>Florist Giza</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <style>
     body {
       margin: 0;
-      font-family: 'Segoe UI', sans-serif;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       background-color: #fdf6f6;
       color: #333;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
     }
     header {
       background-image: url('https://images.unsplash.com/photo-1501004318641-b39e6451bec6?auto=format&fit=crop&w=1350&q=80');
@@ -23,6 +26,7 @@
       text-shadow: 2px 2px 6px rgba(0,0,0,0.5);
       flex-direction: column;
       text-align: center;
+      padding: 0 1rem;
     }
     header h1 {
       font-size: 3em;
@@ -40,45 +44,107 @@
       justify-content: center;
       gap: 2rem;
       padding: 1rem 0;
+      flex-wrap: wrap;
     }
     nav a {
       color: white;
       text-decoration: none;
       font-weight: bold;
+      font-size: 1.1rem;
+      cursor: pointer;
     }
     section {
-      padding: 2rem;
+      padding: 2rem 1rem;
+      max-width: 1000px;
+      margin: 0 auto;
+      flex-grow: 1;
+    }
+    h2 {
+      color: #8b0000;
+      margin-bottom: 1rem;
     }
     .product-card {
       border: 1px solid #ddd;
       border-radius: 10px;
       padding: 1rem;
-      max-width: 300px;
+      max-width: 280px;
       box-shadow: 0 4px 10px rgba(0,0,0,0.1);
       margin-bottom: 1rem;
+      background: white;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
     }
     .product-card img {
       width: 100%;
       border-radius: 10px;
+      object-fit: cover;
+      height: 180px;
+      margin-bottom: 0.8rem;
     }
     footer {
       text-align: center;
       padding: 1.5rem;
       background-color: #222;
       color: #eee;
+      margin-top: auto;
     }
     input, button, textarea {
       padding: 10px;
-      margin: 5px;
+      margin: 5px 0;
       border-radius: 5px;
       border: 1px solid #ccc;
       width: 100%;
       box-sizing: border-box;
+      font-size: 1rem;
+      font-family: inherit;
+    }
+    textarea {
+      resize: vertical;
+      min-height: 70px;
     }
     button {
       background: #8b0000;
       color: white;
       cursor: pointer;
+      border: none;
+      font-weight: bold;
+      transition: background-color 0.3s ease;
+    }
+    button:hover {
+      background-color: #a10000;
+    }
+    #product-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      justify-content: center;
+    }
+    form {
+      max-width: 350px;
+      margin-bottom: 2rem;
+      background: white;
+      padding: 1rem 1.5rem 1.5rem 1.5rem;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+    #online-status {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: bold;
+      color: #2d862d;
+      margin-left: auto;
+      font-size: 1rem;
+    }
+    #online-dot {
+      width: 14px;
+      height: 14px;
+      background-color: #2d862d;
+      border-radius: 50%;
+    }
+    .hidden {
+      display: none !important;
     }
   </style>
 </head>
@@ -91,79 +157,120 @@
 
 <nav>
   <a href="#catalog">Каталог</a>
-  <a href="#add-product">Добавить товар</a>
+  <a href="#add-product" id="nav-add-product" class="hidden">Добавить товар</a>
+  <a href="#register" id="nav-register">Регистрация</a>
+  <a href="#login" id="nav-login">Вход</a>
+  <a href="#" id="nav-logout" class="hidden">Выйти</a>
+  <div id="online-status"><div id="online-dot"></div><span id="online-count">0</span> онлайн</div>
 </nav>
 
 <section id="catalog">
   <h2>Каталог</h2>
-  <div id="product-list" style="display: flex; flex-wrap: wrap; gap: 20px;"></div>
+  <div id="product-list"></div>
 </section>
 
-<section id="add-product">
+<section id="register">
+  <h2>Регистрация</h2>
+  <form id="registerForm">
+    <input type="text" id="reg-phone" placeholder="Телефон (+998...)" pattern="^\+998\d{9}$" title="Введите номер в формате +998xxxxxxxxx" required />
+    <input type="password" id="reg-password" placeholder="Пароль" minlength="4" required />
+    <button type="submit">Зарегистрироваться</button>
+  </form>
+</section>
+
+<section id="login">
+  <h2>Вход</h2>
+  <form id="loginForm">
+    <input type="text" id="login-phone" placeholder="Телефон (+998...)" pattern="^\+998\d{9}$" title="Введите номер в формате +998xxxxxxxxx" required />
+    <input type="password" id="login-password" placeholder="Пароль" minlength="4" required />
+    <button type="submit">Войти</button>
+  </form>
+</section>
+
+<section id="add-product" class="hidden">
   <h2>Добавление товара (только для админов)</h2>
-  <div>
-    <input type="text" id="admin-phone" placeholder="Введите номер администратора" />
-    <input type="text" id="product-name" placeholder="Название товара" />
-    <textarea id="product-description" placeholder="Описание товара"></textarea>
-    <input type="file" id="product-image" accept="image/*" />
-    <button onclick="addProduct()">Добавить товар</button>
-  </div>
+  <form id="addProductForm">
+    <input type="text" id="product-name" placeholder="Название товара" required />
+    <textarea id="product-description" placeholder="Описание товара" required></textarea>
+    <input type="file" id="product-image" accept="image/*" required />
+    <button type="submit">Добавить товар</button>
+  </form>
 </section>
 
 <footer>
-  © 2025 Florist Giza | Сделано с любовью
+  © 2025 Florist Giza | Сделано с любовью ❤️
 </footer>
 
 <script>
+  // Telegram bot info (замени на свои данные)
   const telegramBotToken = "5641966809:AAEJVSxOLel8gcRQOVg_AcJOR8W0G1nC9Po";
   const telegramChatId = "5585811533";
 
-  function generateId() {
-    return 'ID' + Math.floor(Math.random() * 1000000);
+  const admins = ["+998940233830", "+998909059078"];
+  const adminPin = "1397";
+
+  // Отображение элементов навигации
+  const navAddProduct = document.getElementById("nav-add-product");
+  const navRegister = document.getElementById("nav-register");
+  const navLogin = document.getElementById("nav-login");
+  const navLogout = document.getElementById("nav-logout");
+  const onlineCountEl = document.getElementById("online-count");
+
+  // Секции
+  const addProductSection = document.getElementById("add-product");
+  const registerSection = document.getElementById("register");
+  const loginSection = document.getElementById("login");
+
+  // Получаем пользователя из localStorage
+  function getLoggedUser() {
+    return JSON.parse(localStorage.getItem("loggedUser") || "null");
   }
 
-  function addProduct() {
-    const phone = document.getElementById('admin-phone').value.trim();
-    const allowed = ['+998940233830', '+998909059078'];
-    if (!allowed.includes(phone)) {
-      alert("Нет доступа: вы не администратор");
-      return;
-    }
-
-    const name = document.getElementById('product-name').value.trim();
-    const description = document.getElementById('product-description').value.trim();
-    const imageInput = document.getElementById('product-image');
-    const file = imageInput.files[0];
-
-    if (!name || !description || !file) {
-      alert("Заполните все поля и выберите изображение");
-      return;
-    }
-
-    const reader = new FileReader();
-    reader.onload = function (e) {
-      const imageUrl = e.target.result;
-      const productId = generateId();
-
-      const product = { id: productId, name, description, imageUrl };
-      const products = JSON.parse(localStorage.getItem("products") || "[]");
-      products.push(product);
-      localStorage.setItem("products", JSON.stringify(products));
-      renderProducts();
-
-      // Telegram уведомление
-      const message = `🛍️ Новый товар добавлен!\nНазвание: ${name}\nОписание: ${description}\nID: ${productId}\nДобавил: ${phone}`;
-      fetch(`https://api.telegram.org/bot${telegramBotToken}/sendMessage?chat_id=${telegramChatId}&text=${encodeURIComponent(message)}`);
-
-      alert("Товар добавлен!");
-    };
-    reader.readAsDataURL(file);
+  function setLoggedUser(user) {
+    localStorage.setItem("loggedUser", JSON.stringify(user));
   }
 
+  function logoutUser() {
+    localStorage.removeItem("loggedUser");
+    alert("Вы вышли из аккаунта");
+    updateUI();
+  }
+
+  // Обновляем UI в зависимости от состояния пользователя
+  function updateUI() {
+    const user = getLoggedUser();
+    if (user) {
+      navAddProduct.classList.toggle("hidden", !user.isAdmin);
+      navRegister.classList.add("hidden");
+      navLogin.classList.add("hidden");
+      navLogout.classList.remove("hidden");
+      registerSection.classList.add("hidden");
+      loginSection.classList.add("hidden");
+      if (user.isAdmin) {
+        addProductSection.classList.remove("hidden");
+      } else {
+        addProductSection.classList.add("hidden");
+      }
+    } else {
+      navAddProduct.classList.add("hidden");
+      navRegister.classList.remove("hidden");
+      navLogin.classList.remove("hidden");
+      navLogout.classList.add("hidden");
+      addProductSection.classList.add("hidden");
+      registerSection.classList.remove("hidden");
+      loginSection.classList.remove("hidden");
+    }
+  }
+
+  // Рендер каталога товаров
   function renderProducts() {
     const container = document.getElementById("product-list");
     container.innerHTML = "";
     const products = JSON.parse(localStorage.getItem("products") || "[]");
+    if (products.length === 0) {
+      container.innerHTML = "<p>Товары отсутствуют.</p>";
+      return;
+    }
     products.forEach(prod => {
       const card = document.createElement("div");
       card.className = "product-card";
@@ -177,17 +284,130 @@
     });
   }
 
+  // Добавление товара (только для админов)
+  document.getElementById("addProductForm").addEventListener("submit", function(e) {
+    e.preventDefault();
+    const user = getLoggedUser();
+    if (!user || !user.isAdmin) {
+      alert("Нет доступа: вы не администратор");
+      return;
+    }
+
+    const name = document.getElementById("product-name").value.trim();
+    const description = document.getElementById("product-description").value.trim();
+    const imageInput = document.getElementById("product-image");
+    const file = imageInput.files[0];
+
+    if (!name || !description || !file) {
+      alert("Заполните все поля и выберите изображение");
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = function (e) {
+      const imageUrl = e.target.result;
+      const productId = generateId();
+
+      const products = JSON.parse(localStorage.getItem("products") || "[]");
+      products.push({ id: productId, name, description, imageUrl });
+      localStorage.setItem("products", JSON.stringify(products));
+
+      renderProducts();
+      alert("Товар добавлен!");
+
+      // Очищаем форму
+      e.target.reset();
+
+      // Отправляем уведомление в Telegram
+      const message = `🛍️ Новый товар добавлен!\nНазвание: ${name}\nОписание: ${description}\nID: ${productId}\nДобавил: ${user.phone}`;
+      fetch(`https://api.telegram.org/bot${telegramBotToken}/sendMessage?chat_id=${telegramChatId}&text=${encodeURIComponent(message)}`);
+    };
+    reader.readAsDataURL(file);
+  });
+
+  // Регистрация
+  document.getElementById("registerForm").addEventListener("submit", function(e) {
+    e.preventDefault();
+    const ph = document.getElementById("reg-phone").value.trim();
+    const pw = document.getElementById("reg-password").value;
+    if (!ph || !pw) { alert("Заполните поля"); return; }
+
+    let users = JSON.parse(localStorage.getItem("users") || "[]");
+    if (users.find(u => u.phone === ph)) {
+      alert("Пользователь с таким телефоном уже существует");
+      return;
+    }
+    users.push({ phone: ph, password: pw });
+    localStorage.setItem("users", JSON.stringify(users));
+    alert("Регистрация прошла успешно");
+    this.reset();
+  });
+
+  // Вход
+  document.getElementById("loginForm").addEventListener("submit", function(e) {
+    e.preventDefault();
+    const ph = document.getElementById("login-phone").value.trim();
+    const pw = document.getElementById("login-password").value;
+
+    const users = JSON.parse(localStorage.getItem("users") || "[]");
+    const user = users.find(u => u.phone === ph && u.password === pw);
+    if (!user) {
+      alert("Неверный телефон или пароль");
+      return;
+    }
+
+    let isAdmin = admins.includes(ph);
+    if (isAdmin) {
+      const pin = prompt("Введите PIN для админа:");
+      if (pin !== adminPin) {
+        alert("Неверный PIN");
+        return;
+      }
+    }
+
+    setLoggedUser({ phone: ph, isAdmin });
+    alert("Вы успешно вошли!");
+    this.reset();
+    updateUI();
+  });
+
+  // Выход
+  navLogout.addEventListener("click", function(e) {
+    e.preventDefault();
+    logoutUser();
+  });
+
+  // Заказать товар (отправка в телегу)
   function orderProduct(productId) {
-    const user = JSON.parse(localStorage.getItem('user') || '{}');
-    const phone = user.phone || 'Не указан';
-    const message = `🛍️ Новый заказ!\nID товара: ${productId}\nТелефон покупателя: ${phone}`;
+    const user = getLoggedUser();
+    if (!user) {
+      alert("Для заказа нужно войти в систему");
+      return;
+    }
+    const message = `🛍️ Новый заказ!\nID товара: ${productId}\nТелефон покупателя: ${user.phone}`;
     fetch(`https://api.telegram.org/bot${telegramBotToken}/sendMessage?chat_id=${telegramChatId}&text=${encodeURIComponent(message)}`);
     alert("Заказ отправлен!");
   }
 
-  document.addEventListener("DOMContentLoaded", () => {
+  // Генерация уникального ID для товара
+  function generateId() {
+    return 'ID' + Math.floor(Math.random() * 1000000) + Date.now();
+  }
+
+  // Счётчик онлайн (условный, показывает 1 если залогинен)
+  function updateOnlineStatus() {
+    const user = getLoggedUser();
+    onlineCountEl.textContent = user ? "1" : "0";
+  }
+
+  // Инициализация страницы
+  function init() {
+    updateUI();
     renderProducts();
-  });
+    updateOnlineStatus();
+  }
+
+  document.addEventListener("DOMContentLoaded", init);
 </script>
 
 </body>
